@@ -1,0 +1,33 @@
+name: Test
+
+on: [ push ]
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: :psr, json, dom, curl, libxml, mbstring
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer update --no-interaction --no-progress --prefer-dist --prefer-stable
+
+      - name: Test
+        run: vendor/bin/phpunit
+
+      - name: Store artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs
+          path: |
+            vendor/orchestra/testbench-core/laravel/storage/logs
+            !vendor/**/.gitignore
