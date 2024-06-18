@@ -17,8 +17,7 @@ trait SendsRequests
 {
     public function __construct(
         protected PendingRequest $client
-    ) {
-    }
+    ) {}
 
     /**
      * Issue a `GET` request to the given path.
