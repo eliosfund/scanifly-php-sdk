@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Scanifly\Tests\Facades;
 
 use GuzzleHttp\Psr7\Uri;
-use Illuminate\Http\Client\Response;
-use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Random\RandomException;
@@ -230,11 +228,6 @@ class ScaniflyTest extends TestCase
         $this->fakeScanifly('/users/positions');
 
         $this->assertOk(Scanifly::getAvailableUserPositions());
-    }
-
-    protected function assertOk(Response $response): void
-    {
-        $this->assertSame(HttpResponse::HTTP_OK, $response->status());
     }
 
     protected function fakeScanifly(string $path, ?array $query = null): void
