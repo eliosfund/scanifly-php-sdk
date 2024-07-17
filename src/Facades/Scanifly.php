@@ -29,6 +29,9 @@ use Scanifly\ScaniflyService;
  * @method static \Illuminate\Http\Client\Response getProjects()
  * @method static \Illuminate\Http\Client\Response getServiceRequest(string $projectId)
  * @method static \Illuminate\Http\Client\Response getAvailableUserPositions()
+ * @method static string buildUrl(string $path, array|null $query = null)
+ * @method static \GuzzleHttp\Psr7\Uri baseUri()
+ * @method static \Illuminate\Http\Client\PendingRequest client()
  * @method static \Illuminate\Http\Client\Response get(string $path, array|null $query = null)
  *
  * @see \Scanifly\ScaniflyService

@@ -13,6 +13,51 @@ use Scanifly\Tests\TestCase;
 
 class ScaniflyTest extends TestCase
 {
+    public function test_it_can_build_a_url(): void
+    {
+        $expected = 'https://api.portal.scanifly.com/api/v1/test?access_token=00000000-0000-0000-0000-000000000000';
+
+        $url = Scanifly::buildUrl('/test');
+
+        $this->assertSame($expected, $url);
+    }
+
+    public function test_it_can_build_a_url_with_query(): void
+    {
+        $expected = 'https://api.portal.scanifly.com/api/v1/test?access_token=00000000-0000-0000-0000-000000000000&foo=bar';
+
+        $url = Scanifly::buildUrl('/test', [
+            'foo' => 'bar',
+        ]);
+
+        $this->assertSame($expected, $url);
+    }
+
+    public function test_it_can_get_the_base_uri(): void
+    {
+        $uri = Scanifly::baseUri();
+
+        $this->assertSame('https', $uri->getScheme());
+        $this->assertSame('api.portal.scanifly.com', $uri->getHost());
+        $this->assertSame('/api/v1', $uri->getPath());
+    }
+
+    public function test_it_can_get_the_client(): void
+    {
+        $expected = [
+            'connect_timeout' => config('scanifly.connect_timeout'),
+            'http_errors' => false,
+            'timeout' => config('scanifly.timeout'),
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
+        ];
+
+        $options = Scanifly::client()->getOptions();
+
+        $this->assertSame($expected, $options);
+    }
+
     public function test_get_boundary(): void
     {
         $boundaryId = $this->generateDataObjectId();
