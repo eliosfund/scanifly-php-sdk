@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Scanifly\Facades;
 
+use Illuminate\Http\Client\Factory;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Facade;
+use Illuminate\Support\Facades\Http;
 use Scanifly\ScaniflyService;
 
 /**
@@ -38,6 +41,22 @@ use Scanifly\ScaniflyService;
  */
 class Scanifly extends Facade
 {
+    public static function fake(
+        string $path = '*',
+        ?array $query = null,
+        array|null|string $body = null,
+        int $status = Response::HTTP_OK
+    ): Factory {
+        /** @var ScaniflyService $instance */
+        $instance = static::getFacadeRoot();
+
+        $url = $instance->buildUrl($path, $query);
+
+        return Http::fake([
+            $url => Http::response($body, $status),
+        ]);
+    }
+
     protected static function getFacadeAccessor(): string
     {
         return ScaniflyService::class;

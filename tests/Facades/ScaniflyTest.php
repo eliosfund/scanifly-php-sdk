@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace Scanifly\Tests\Facades;
 
-use GuzzleHttp\Psr7\Uri;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 use Random\RandomException;
 use Scanifly\Facades\Scanifly;
 use Scanifly\Tests\TestCase;
 
 class ScaniflyTest extends TestCase
 {
+    public function test_it_can_fake_a_response(): void
+    {
+        Scanifly::fake();
+
+        $this->assertOk(Scanifly::get('/'));
+    }
+
     public function test_it_can_build_a_url(): void
     {
         $expected = 'https://api.portal.scanifly.com/api/v1/test?access_token=00000000-0000-0000-0000-000000000000';
@@ -62,7 +66,7 @@ class ScaniflyTest extends TestCase
     {
         $boundaryId = $this->generateDataObjectId();
 
-        $this->fakeScanifly("/boundaries/$boundaryId");
+        Scanifly::fake("/boundaries/$boundaryId");
 
         $this->assertOk(Scanifly::getBoundary(
             boundaryId: $boundaryId
@@ -73,7 +77,7 @@ class ScaniflyTest extends TestCase
     {
         $projectId = $this->generateDataObjectId();
 
-        $this->fakeScanifly("/boundaries/project/$projectId");
+        Scanifly::fake("/boundaries/project/$projectId");
 
         $this->assertOk(Scanifly::getBoundaryByProjectId(
             projectId: $projectId
@@ -84,7 +88,7 @@ class ScaniflyTest extends TestCase
     {
         $projectId = $this->generateDataObjectId();
 
-        $this->fakeScanifly("/checklist/$projectId");
+        Scanifly::fake("/checklist/$projectId");
 
         $this->assertOk(Scanifly::getChecklistsByProjectId(
             projectId: $projectId
@@ -96,7 +100,7 @@ class ScaniflyTest extends TestCase
         $projectId = $this->generateDataObjectId();
         $checklistId = $this->generateDataObjectId();
 
-        $this->fakeScanifly("/checklist/$projectId/$checklistId");
+        Scanifly::fake("/checklist/$projectId/$checklistId");
 
         $this->assertOk(Scanifly::getChecklistById(
             projectId: $projectId,
@@ -108,7 +112,7 @@ class ScaniflyTest extends TestCase
     {
         $companyId = $this->generateDataObjectId();
 
-        $this->fakeScanifly('/checklist-template', [
+        Scanifly::fake('/checklist-template', [
             'companyId' => $companyId,
         ]);
 
@@ -121,7 +125,7 @@ class ScaniflyTest extends TestCase
     {
         $templateId = $this->generateDataObjectId();
 
-        $this->fakeScanifly("/checklist-template/$templateId");
+        Scanifly::fake("/checklist-template/$templateId");
 
         $this->assertOk(Scanifly::getChecklistTemplate(
             templateId: $templateId
@@ -130,21 +134,21 @@ class ScaniflyTest extends TestCase
 
     public function test_get_current_users_company(): void
     {
-        $this->fakeScanifly('/companies/current');
+        Scanifly::fake('/companies/current');
 
         $this->assertOk(Scanifly::getCurrentUsersCompany());
     }
 
     public function test_get_current_users_company_members(): void
     {
-        $this->fakeScanifly('/companies/current/members');
+        Scanifly::fake('/companies/current/members');
 
         $this->assertOk(Scanifly::getCurrentUsersCompanyMembers());
     }
 
     public function test_get_project_designs(): void
     {
-        $this->fakeScanifly('/designs');
+        Scanifly::fake('/designs');
 
         $this->assertOk(Scanifly::getProjectDesigns());
     }
@@ -153,7 +157,7 @@ class ScaniflyTest extends TestCase
     {
         $projectId = $this->generateDataObjectId();
 
-        $this->fakeScanifly("/designs/$projectId");
+        Scanifly::fake("/designs/$projectId");
 
         $this->assertOk(Scanifly::getDesignsByProjectId(
             projectId: $projectId
@@ -164,7 +168,7 @@ class ScaniflyTest extends TestCase
     {
         $folderId = $this->generateDataObjectId();
 
-        $this->fakeScanifly("/folders/$folderId");
+        Scanifly::fake("/folders/$folderId");
 
         $this->assertOk(Scanifly::getFolder(
             folderId: $folderId
@@ -173,7 +177,7 @@ class ScaniflyTest extends TestCase
 
     public function test_get_folders_for_current_company(): void
     {
-        $this->fakeScanifly('/folders/current');
+        Scanifly::fake('/folders/current');
 
         $this->assertOk(Scanifly::getFoldersForCurrentCompany());
     }
@@ -183,7 +187,7 @@ class ScaniflyTest extends TestCase
         $projectId = $this->generateDataObjectId();
         $categoryId = $this->generateDataObjectId();
 
-        $this->fakeScanifly("/media/$projectId/$categoryId");
+        Scanifly::fake("/media/$projectId/$categoryId");
 
         $this->assertOk(Scanifly::getMediaByCategoryId(
             projectId: $projectId,
@@ -197,7 +201,7 @@ class ScaniflyTest extends TestCase
         $categoryId = $this->generateDataObjectId();
         $mediaId = $this->generateDataObjectId();
 
-        $this->fakeScanifly("/media/$projectId/$categoryId/$mediaId");
+        Scanifly::fake("/media/$projectId/$categoryId/$mediaId");
 
         $this->assertOk(Scanifly::getMediaById(
             projectId: $projectId,
@@ -210,7 +214,7 @@ class ScaniflyTest extends TestCase
     {
         $projectId = $this->generateDataObjectId();
 
-        $this->fakeScanifly("/media-categories/$projectId");
+        Scanifly::fake("/media-categories/$projectId");
 
         $this->assertOk(Scanifly::getMediaCategoriesForProject(
             projectId: $projectId
@@ -221,7 +225,7 @@ class ScaniflyTest extends TestCase
     {
         $userId = $this->generateDataObjectId();
 
-        $this->fakeScanifly("/module-library/$userId");
+        Scanifly::fake("/module-library/$userId");
 
         $this->assertOk(Scanifly::getUsersModuleLibrary(
             userId: $userId
@@ -232,7 +236,7 @@ class ScaniflyTest extends TestCase
     {
         $projectUserId = $this->generateDataObjectId();
 
-        $this->fakeScanifly("/module-library/combined/$projectUserId");
+        Scanifly::fake("/module-library/combined/$projectUserId");
 
         $this->assertOk(Scanifly::getCompanyModuleLibrary(
             projectUserId: $projectUserId
@@ -243,7 +247,7 @@ class ScaniflyTest extends TestCase
     {
         $projectId = $this->generateDataObjectId();
 
-        $this->fakeScanifly("/projects/$projectId");
+        Scanifly::fake("/projects/$projectId");
 
         $this->assertOk(Scanifly::getProjectById(
             projectId: $projectId
@@ -252,7 +256,7 @@ class ScaniflyTest extends TestCase
 
     public function test_get_projects(): void
     {
-        $this->fakeScanifly('/projects');
+        Scanifly::fake('/projects');
 
         $this->assertOk(Scanifly::getProjects());
     }
@@ -261,7 +265,7 @@ class ScaniflyTest extends TestCase
     {
         $projectId = $this->generateDataObjectId();
 
-        $this->fakeScanifly("/serviceRequests/project/$projectId");
+        Scanifly::fake("/serviceRequests/project/$projectId");
 
         $this->assertOk(Scanifly::getServiceRequest(
             projectId: $projectId
@@ -270,29 +274,9 @@ class ScaniflyTest extends TestCase
 
     public function test_get_available_user_positions(): void
     {
-        $this->fakeScanifly('/users/positions');
+        Scanifly::fake('/users/positions');
 
         $this->assertOk(Scanifly::getAvailableUserPositions());
-    }
-
-    protected function fakeScanifly(string $path, ?array $query = null): void
-    {
-        $url = (string) (new Uri())->withScheme(
-            scheme: 'https'
-        )->withHost(
-            host: config('scanifly.fqdn')
-        )->withPath(
-            path: config('scanifly.endpoint').Str::start($path, '/')
-        )->withQuery(
-            query: http_build_query(array_merge(
-                ['access_token' => config('scanifly.token')],
-                $query ?? []
-            ))
-        );
-
-        Http::fake([
-            $url => Http::response(),
-        ]);
     }
 
     protected function generateDataObjectId(): string
