@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Scanifly;
 
-use GuzzleHttp\Psr7\Uri;
 use Illuminate\Contracts\Support\DeferrableProvider;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 
 class ScaniflyServiceProvider extends ServiceProvider implements DeferrableProvider
@@ -24,21 +22,10 @@ class ScaniflyServiceProvider extends ServiceProvider implements DeferrableProvi
             $this->mergeConfigFrom($configPath, 'scanifly');
         }
 
-        $this->app->singleton(ScaniflyService::class, static fn (): ScaniflyService => new ScaniflyService(
-            client: Http::acceptJson()->baseUrl(
-                url: (string) (new Uri())->withScheme(
-                    scheme: 'https'
-                )->withHost(
-                    host: config('scanifly.fqdn')
-                )->withPath(
-                    path: config('scanifly.endpoint')
-                )
-            )->timeout(
-                seconds: config('scanifly.timeout')
-            )->connectTimeout(
-                seconds: config('scanifly.connect_timeout')
-            )
-        ));
+        $this->app->singleton(
+            abstract: ScaniflyService::class,
+            concrete: static fn (): ScaniflyService => new ScaniflyService()
+        );
     }
 
     /**
