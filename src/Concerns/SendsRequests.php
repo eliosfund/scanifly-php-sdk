@@ -25,10 +25,13 @@ trait SendsRequests
         $url = $url->withPath(
             path: $url->getPath().Str::start($path, '/')
         )->withQuery(
-            query: http_build_query(array_merge(
-                ['access_token' => config('scanifly.token')],
-                $query ?? []
-            ))
+            query: http_build_query(
+                data: array_merge(
+                    ['access_token' => config('scanifly.token')],
+                    $query ?? []
+                ),
+                encoding_type: PHP_QUERY_RFC3986
+            )
         );
 
         return (string) $url;
