@@ -261,6 +261,66 @@ class ScaniflyTest extends TestCase
         $this->assertOk(Scanifly::getProjects());
     }
 
+    public function test_filter_projects_by_address(): void
+    {
+        $street = '123 Main St';
+        $city = 'Springfield';
+        $state = 'Illinois';
+        $zipCode = '62701';
+
+        Scanifly::fake('/projects', [
+            'filterBy[address]' => "$street, $city, $state $zipCode",
+        ]);
+
+        $this->assertOk(Scanifly::filterProjectsByAddress(
+            street: $street,
+            city: $city,
+            state: $state,
+            zipCode: $zipCode
+        ));
+    }
+
+    public function test_filter_projects_by_city_and_state(): void
+    {
+        $city = 'Springfield';
+        $state = 'Illinois';
+
+        Scanifly::fake('/projects', [
+            'filterBy[address]' => "$city, $state",
+        ]);
+
+        $this->assertOk(Scanifly::filterProjectsByCityAndState(
+            city: $city,
+            state: $state
+        ));
+    }
+
+    public function test_filter_projects_by_state(): void
+    {
+        $state = 'Illinois';
+
+        Scanifly::fake('/projects', [
+            'filterBy[address]' => $state,
+        ]);
+
+        $this->assertOk(Scanifly::filterProjectsByState(
+            state: $state
+        ));
+    }
+
+    public function test_filter_projects_by_zip_code(): void
+    {
+        $zipCode = '62701';
+
+        Scanifly::fake('/projects', [
+            'filterBy[address]' => $zipCode,
+        ]);
+
+        $this->assertOk(Scanifly::filterProjectsByZipCode(
+            zipCode: $zipCode
+        ));
+    }
+
     public function test_get_service_request(): void
     {
         $projectId = $this->generateDataObjectId();
