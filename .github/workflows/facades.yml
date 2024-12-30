@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  Facades:
+  facades:
     runs-on: ubuntu-latest
 
     permissions:
