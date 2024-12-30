@@ -12,9 +12,13 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [ 8.2, 8.3, 8.4 ]
+        php: [8.2, 8.3]
+        laravel: [10, 11]
+        include:
+          - php: 8.4
+            laravel: 11
 
-    name: Run Tests - PHP ${{ matrix.php }}
+    name: Run Tests - PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
 
     steps:
       - name: Checkout Source
@@ -24,12 +28,13 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, bcmath, intl, exif, iconv, fileinfo
+          extensions: dom, curl, libxml, mbstring, zip
+          ini-values: error_reporting=E_ALL
           tools: composer:v2
           coverage: xdebug
 
       - name: Install Composer Dependencies
-        run: composer install --no-interaction --no-progress --prefer-dist
+        run: composer update --prefer-dist --no-interaction --no-progress --with="illuminate/support=^${{ matrix.laravel }}"
 
       - name: Run Test Suite
         run: XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover ./coverage.xml
